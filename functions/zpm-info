@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-autoload -Uz _ZPM_get_plugin_name _ZPM_get_plugin_path _ZPM_get_plugin_type _ZPM_get_plugin_root_git_dir
+autoload -Uz @zpm-get-plugin-name @zpm-get-plugin-path @zpm-get-plugin-type @zpm-get-plugin-root-git-dir
 
 plugins=($@)
 # echo '----' $@
@@ -10,11 +10,11 @@ fi
 local pre post pre_str post_str url readme async
 
 for plugin in $plugins; do
-  local Plugin_name=$(_ZPM_get_plugin_name "$1")
-  local Plugin_path=$(_ZPM_get_plugin_path "$Plugin_name")
+  local Plugin_name=$(@zpm-get-plugin-name "$1")
+  local Plugin_path=$(@zpm-get-plugin-path "$Plugin_name")
   local plugin_full=$_ZPM_plugins_full[$plugin]
-  local Plugin_type=$(_ZPM_get_plugin_type "$plugin_full")
-  local Plugin_git_dir=$(_ZPM_get_plugin_root_git_dir "$Plugin_path" "$Plugin_type")
+  local Plugin_type=$(@zpm-get-plugin-type "$plugin_full")
+  local Plugin_git_dir=$(@zpm-get-plugin-root-git-dir "$Plugin_path" "$Plugin_type")
 
   printf "${c[dim]}${c[yellow]}┌──────────────────────────────────────────────────────────────────────────────┐${c[reset]}\n"
 
