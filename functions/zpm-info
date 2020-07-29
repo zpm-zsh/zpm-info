@@ -1,8 +1,13 @@
 #!/usr/bin/env zsh
-autoload -Uz @zpm-get-plugin-name @zpm-get-plugin-path @zpm-get-plugin-type @zpm-get-plugin-root-git-dir
+autoload -Uz \
+  @zpm-get-plugin-git-root-path \
+  @zpm-get-plugin-hyperlink \
+  @zpm-get-plugin-link \
+  @zpm-get-plugin-name \
+  @zpm-get-plugin-path \
+  @zpm-get-plugin-type
 
 plugins=($@)
-# echo '----' $@
 if [[ -z $plugins ]]; then
   plugins=('zpm')
 fi
@@ -10,44 +15,47 @@ fi
 local pre post pre_str post_str url readme async
 
 for plugin in $plugins; do
-  local Plugin_name=$(@zpm-get-plugin-name "$1")
+  local Plugin_name=$(@zpm-get-plugin-name "$plugin")
   local Plugin_path=$(@zpm-get-plugin-path "$Plugin_name")
   local plugin_full=$_ZPM_plugins_full[$plugin]
   local Plugin_type=$(@zpm-get-plugin-type "$plugin_full")
-  local Plugin_git_dir=$(@zpm-get-plugin-root-git-dir "$Plugin_path" "$Plugin_type")
+  local Plugin_git_dir=$(@zpm-get-plugin-git-root-path "$Plugin_path" "$Plugin_type")
+  local Plugin_link=$(@zpm-get-plugin-link "$Plugin_name" "$Plugin_type")
+  local Plugin_hyperlink=$(@zpm-get-plugin-hyperlink "$Plugin_name" "$Plugin_link")
 
-  printf "${c[dim]}${c[yellow]}┌──────────────────────────────────────────────────────────────────────────────┐${c[reset]}\n"
+  printf "${c[dim]}${c[yellow]}┌──────────────────────────────────────────────────────────────────────────────────────────────────┐${c[reset]}\n"
 
-  pre=$(( ( 76 - ${#plugin} ) / 2 ))
+  pre=$(( ( 96 - ${#plugin} ) / 2 ))
   pre_str=$(seq -s " " ${pre} | sed 's/[0-9]//g')
-  post=$(( 76 - $pre - ${#plugin} ))
+  post=$(( 96 - $pre - ${#plugin} ))
   post_str=$(seq -s " " ${post} | sed 's/[0-9]//g')
   printf "${c[dim]}${c[yellow]}│${c[reset]} %s %s %s ${c[dim]}${c[yellow]}│${c[reset]} \n" $pre_str "$plugin" $post_str
 
-  printf "${c[dim]}${c[yellow]}├────────────┬─────────────────────────────────────────────────────────────────┤${c[reset]}\n"
+  printf "${c[dim]}${c[yellow]}├────────────┬─────────────────────────────────────────────────────────────────────────────────────┤${c[reset]}\n"
 
-  url=$(cat "${Plugin_git_dir}/.git/config" | grep url | awk -F'=' '{print $2}' | xargs)
-  post=$(( 64  - ${#url} ))
-  post_str=$(seq -s " " ${post} | sed 's/[0-9]//g')
-  printf "${c[dim]}${c[yellow]}│${c[reset]} Url        ${c[dim]}${c[yellow]}│${c[reset]} %s %s${c[dim]}${c[yellow]}│${c[reset]}\n" "$url" $post_str
+  if [[ -n "$Plugin_link" ]]; then
+    post=$(( 84  - ${#Plugin_link} ))
+    post_str=$(seq -s " " ${post} | sed 's/[0-9]//g')
+    printf "${c[dim]}${c[yellow]}│${c[reset]} Url        ${c[dim]}${c[yellow]}│${c[reset]} %s %s${c[dim]}${c[yellow]}│${c[reset]}\n" "$Plugin_link" $post_str
 
-  printf "${c[dim]}${c[yellow]}├────────────┼─────────────────────────────────────────────────────────────────┤${c[reset]}\n"
+    printf "${c[dim]}${c[yellow]}├────────────┼─────────────────────────────────────────────────────────────────────────────────────┤${c[reset]}\n"
+  fi
 
-  post=$(( 64 - ${#Plugin_type} ))
+  post=$(( 84 - ${#Plugin_type} ))
   post_str=$(seq -s " " ${post} | sed 's/[0-9]//g')
   printf "${c[dim]}${c[yellow]}│${c[reset]} type       ${c[dim]}${c[yellow]}│${c[reset]} %s %s${c[dim]}${c[yellow]}│${c[reset]}\n" "$Plugin_type" $post_str
 
 
-  printf "${c[dim]}${c[yellow]}├────────────┼─────────────────────────────────────────────────────────────────┤${c[reset]}\n"
+  printf "${c[dim]}${c[yellow]}├────────────┼─────────────────────────────────────────────────────────────────────────────────────┤${c[reset]}\n"
 
   async=false
   if [[ "$plugin_full"  == *",async"* ]]; then
     async=true
   fi
-  post=$(( 64 - ${#async} ))
+  post=$(( 84 - ${#async} ))
   post_str=$(seq -s " " ${post} | sed 's/[0-9]//g')
   printf "${c[dim]}${c[yellow]}│${c[reset]} Async      ${c[dim]}${c[yellow]}│${c[reset]} %s %s${c[dim]}${c[yellow]}│${c[reset]}\n" "$async" $post_str
 
-  printf "${c[dim]}${c[yellow]}└────────────┴─────────────────────────────────────────────────────────────────┘${c[reset]}\n"
+  printf "${c[dim]}${c[yellow]}└────────────┴─────────────────────────────────────────────────────────────────────────────────────┘${c[reset]}\n"
 
 done
