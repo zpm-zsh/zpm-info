@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 autoload -Uz \
-  @zpm-get-plugin-git-root-path \
   @zpm-get-plugin-hyperlink \
   @zpm-get-plugin-link \
   @zpm-get-plugin-name \
@@ -19,7 +18,6 @@ for plugin in $plugins; do
   local Plugin_path=$(@zpm-get-plugin-path "$Plugin_name")
   local plugin_full=$_ZPM_plugins_full[$plugin]
   local Plugin_type=$(@zpm-get-plugin-type "$plugin_full")
-  local Plugin_git_dir=$(@zpm-get-plugin-git-root-path "$Plugin_path" "$Plugin_type")
   local Plugin_link=$(@zpm-get-plugin-link "$Plugin_name" "$Plugin_type")
   local Plugin_hyperlink=$(@zpm-get-plugin-hyperlink "$Plugin_name" "$Plugin_link")
 
